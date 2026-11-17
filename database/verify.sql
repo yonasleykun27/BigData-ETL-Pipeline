@@ -79,3 +79,21 @@ WHERE transaction_timestamp >= '2025-01-01' AND transaction_timestamp < '2026-01
 GROUP BY sales_month
 ORDER BY sales_month;
 
+-- 8. FINAL ANALYTICAL VIEW PREVIEW: Star Schema Consolidated Reporting View
+SELECT 
+    transaction_id,
+    order_id,
+    customer_name,
+    customer_country,
+    product_category,
+    product_name,
+    unit_price,
+    quantity,
+    total_amount,
+    order_status,
+    transaction_timestamp
+FROM vw_ecommerce_final_summary
+ORDER BY transaction_timestamp DESC
+LIMIT 10;
+
+

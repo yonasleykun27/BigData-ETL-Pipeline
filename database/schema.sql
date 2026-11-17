@@ -82,7 +82,37 @@ CREATE TABLE dim_products (
 CREATE INDEX idx_dim_cust_country ON dim_customers (customer_country);
 CREATE INDEX idx_dim_prod_cat ON dim_products (product_category);
 
+-- ----------------------------------------------------------------------------
+-- 4. Analytical Reporting View (Unified Star Schema Final Reporting View)
+-- ----------------------------------------------------------------------------
+CREATE OR REPLACE VIEW vw_ecommerce_final_summary AS
+SELECT 
+    t.transaction_id,
+    t.order_id,
+    t.customer_id,
+    c.customer_name,
+    c.customer_email,
+    c.customer_country,
+    c.customer_city,
+    t.product_id,
+    p.product_name,
+    p.product_category,
+    t.unit_price,
+    t.quantity,
+    t.discount_rate,
+    t.tax_amount,
+    t.shipping_cost,
+    t.total_amount,
+    t.payment_method,
+    t.order_status,
+    t.shipping_carrier,
+    t.transaction_timestamp
+FROM ecommerce_transactions t
+LEFT JOIN dim_customers c ON t.customer_id = c.customer_id
+LEFT JOIN dim_products p ON t.product_id = p.product_id;
+
 COMMENT ON TABLE ecommerce_transactions IS 'Consolidated 2M+ E-Commerce transaction records with full audit trail';
 COMMENT ON COLUMN ecommerce_transactions.transaction_id IS 'Unique UUID/Alpha-numeric transaction key';
 COMMENT ON COLUMN ecommerce_transactions.total_amount IS 'Calculated net transaction total including tax and shipping minus discount';
+COMMENT ON VIEW vw_ecommerce_final_summary IS 'Final consolidated analytical reporting view joining transactions with dimensions';
 
